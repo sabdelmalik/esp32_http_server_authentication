@@ -1,0 +1,26 @@
+menu "HTTP Server Authentication"
+
+    choice
+        bool "HTTP authentication Scheme"
+        default HTTP_AUTH_DIGEST
+        help
+          "Basic" scheme defined in RFC 7617, transmits credentials (user ID/password), encoded using base64. **
+          "Digest" scheme defined in RFC 7617, transmits credentials (user ID/password), in hashed form along with other server defined fields. 
+          refer to https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml
+
+        config HTTP_AUTH_NONE
+            bool "HTTP_AUTH_NONE"
+        config HTTP_AUTH_BASIC
+            bool "HTTP_AUTH_BASIC"
+        config HTTP_AUTH_DIGEST
+            bool "HTTP_AUTH_DIGEST"
+    endchoice
+
+    if !HTTP_AUTH_NONE
+      config DIGEST_REALM
+          string "Digest scheme realm"
+          default "spanit"
+          help
+            A string to be displayed to users so they know which username and password to use.
+    endif
+endmenu

@@ -1,0 +1,16 @@
+{
+  "C_Cpp.intelliSenseEngine": "Tag Parser",
+  "idf.adapterTargetName": "esp32",
+  "idf.openOcdConfigs": [
+    "interface/ftdi/esp32_devkitj_v1.cfg",
+    "target/esp32.cfg"
+  ],
+  "idf.portWin": "COM18",
+  "files.associations": {
+    "*.ipp": "c",
+    "*.inc": "c",
+    "esp_http_server.h": "c",
+    "http_authentication.h": "c",
+    "md5.h": "c"
+  }
+}
