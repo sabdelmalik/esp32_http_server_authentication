@@ -67,8 +67,16 @@ esp_err_t parse_token(char *token_buffer, char *param, char *value)
 
   return ESP_OK;
 }
-
-esp_err_t validate_digest_response(char *hdr_buffer, char *user_id, char *password)
+/**
+ * @brief 
+ * 
+ * @param hdr_buffer 
+ * @param method 
+ * @param user_id 
+ * @param password 
+ * @return esp_err_t 
+ */
+esp_err_t validate_digest_response(const char *hdr_buffer, const char *method, const char *user_id, const char *password)
 {
   // TODO check that hdr_buffer starts with "Digest "
 
@@ -130,7 +138,7 @@ esp_err_t validate_digest_response(char *hdr_buffer, char *user_id, char *passwo
   ESP_LOGW(TAG, "A1: %s, A1_hash: %s", work_buffer, A1_hash);
 
   char A2_hash[33];
-  sprintf(work_buffer, "GET:%s", rcvd_uri);
+  sprintf(work_buffer, "%s:%s", method, rcvd_uri);
   getMD5((uint8_t *)work_buffer, strlen(work_buffer), A2_hash);
   ESP_LOGW(TAG, "A2: %s, A2_hash: %s", work_buffer, A2_hash);
 

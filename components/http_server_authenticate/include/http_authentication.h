@@ -16,21 +16,18 @@
  */
 
 #define HDR_BUFFER_LENGTH 1024
-
-#if CONFIG_HTTP_AUTH_BASIC
 extern char hdr_buffer[HDR_BUFFER_LENGTH];
 
+#if CONFIG_HTTP_AUTH_BASIC
 esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password);
 esp_err_t send_basic_authorisation_request(httpd_req_t *req);
 esp_err_t validate_basic_response(char *hdr_buffer, char *user_id, char *password);
 #endif
 
 #if CONFIG_HTTP_AUTH_DIGEST
-extern char hdr_buffer[HDR_BUFFER_LENGTH];
-
 esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password);
 esp_err_t send_digest_authorisation_request(httpd_req_t *req);
-esp_err_t validate_digest_response(char *hdr_buffer, char *user_id, char *password);
+esp_err_t validate_digest_response(const char *hdr_buffer, const char *method, const char *user_id, const char *password);
 #endif
 
 esp_err_t get_header(httpd_req_t *req, const char *header_name, char *buf, size_t buf_len);
@@ -38,3 +35,5 @@ esp_err_t getMD5(uint8_t *data, uint16_t len, char *output);
 
 size_t base64_encoded_size(size_t data_to_encode_size);
 esp_err_t base64_encode(uint8_t *data_to_encode, size_t data_to_encode_size, char *encoded_data);
+
+char *get_method_string(httpd_method_t method);

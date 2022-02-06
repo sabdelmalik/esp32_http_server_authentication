@@ -8,7 +8,8 @@ char hdr_buffer[HDR_BUFFER_LENGTH];
 
 static const char *TAG = "http authentication common";
 
-#if CONFIG_HTTP_AUTH_DIGEST || CONFIG_HTTP_AUTH_BASIC
+#if !CONFIG_HTTP_AUTH_NONE
+
 esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password)
 {
 
@@ -37,7 +38,7 @@ esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password)
   ESP_LOGW(TAG, "Authorization: %s", hdr_buffer);
 
 #if CONFIG_HTTP_AUTH_DIGEST
-  if (validate_digest_response(hdr_buffer, user_id, password) != ESP_OK)
+  if (validate_digest_response(hdr_buffer, get_method_string(req->method), user_id, password) != ESP_OK)
     return send_digest_authorisation_request(req);
 #elif CONFIG_HTTP_AUTH_BASIC
   if (validate_basic_response(hdr_buffer, user_id, password) != ESP_OK)
@@ -96,4 +97,21 @@ esp_err_t getMD5(uint8_t *data, uint16_t len, char *output)
   free(buf);
   output[strlen(output)] = 0;
   return ESP_OK;
+}
+
+char *get_method_string(httpd_method_t method)
+{
+  switch (method)
+  {
+  case HTTP_GET:
+    return "GET";
+  case HTTP_POST:
+    return "POST";
+  case HTTP_DELETE:
+    return "DELETE";
+  case HTTP_PUT:
+    return "PUT";
+  default:
+    return "UNKNOWN";
+  }
 }
