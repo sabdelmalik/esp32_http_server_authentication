@@ -23,4 +23,17 @@ menu "HTTP Server Authentication"
           help
             A string to be displayed to users so they know which username and password to use.
     endif
-endmenu
+
+    config TEST_USER_NAME
+      string "test user name"
+      default "joe"
+      help
+        A string to be displayed to users so they know which username and password to use.
+
+    config TEST_USER_PASSWORD
+      string "test user password"
+      default "Password1"
+      help
+        A string to be displayed to users so they know which username and password to use.
+
+  endmenu

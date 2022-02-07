@@ -4,33 +4,38 @@
 
 #include "http_authentication.h"
 
-char hdr_buffer[HDR_BUFFER_LENGTH];
-
 static const char *TAG = "http authentication common";
 
 #if !CONFIG_HTTP_AUTH_NONE
 
 esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password)
 {
-
-  esp_err_t ret = get_header(req, "Authorization", hdr_buffer, sizeof(hdr_buffer));
+  char *hdr_buffer = malloc(HDR_BUFFER_LENGTH);
+  if (!hdr_buffer)
+  {
+    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Memory allocation failed");
+    return ESP_FAIL;
+  }
+  esp_err_t ret = get_header(req, "Authorization", hdr_buffer, HDR_BUFFER_LENGTH);
 
   if (ret == ESP_ERR_NOT_FOUND)
   {
+    free(hdr_buffer);
 #if CONFIG_HTTP_AUTH_DIGEST
     return send_digest_authorisation_request(req);
 #elif CONFIG_HTTP_AUTH_BASIC
     return send_basic_authorisation_request(req);
 #endif
   }
-
-  if (ret == ESP_ERR_INVALID_SIZE)
+  else if (ret == ESP_ERR_INVALID_SIZE)
   {
-    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Memory allocation failed");
+    free(hdr_buffer);
+    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Header too long");
     return ESP_FAIL;
   }
-  if (ret != ESP_OK)
+  else if (ret != ESP_OK)
   {
+    free(hdr_buffer);
     httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Error in getting value of header");
     return ESP_FAIL;
   }
@@ -39,13 +44,22 @@ esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password)
 
 #if CONFIG_HTTP_AUTH_DIGEST
   if (validate_digest_response(hdr_buffer, get_method_string(req->method), user_id, password) != ESP_OK)
+  {
+    free(hdr_buffer);
     return send_digest_authorisation_request(req);
+  }
 #elif CONFIG_HTTP_AUTH_BASIC
   if (validate_basic_response(hdr_buffer, user_id, password) != ESP_OK)
+  {
+    free(hdr_buffer);
     return send_basic_authorisation_request(req);
+  }
 #endif
   else
+  {
+    free(hdr_buffer);
     return ESP_OK;
+  }
 }
 #endif
 

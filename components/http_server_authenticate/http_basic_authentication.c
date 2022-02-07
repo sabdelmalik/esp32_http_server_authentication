@@ -36,6 +36,7 @@ static const char *TAG = "basic authentication";
  */
 esp_err_t send_basic_authorisation_request(httpd_req_t *req)
 {
+  char hdr_buffer[128];
   sprintf(hdr_buffer, "Basic realm=\"%s\"", CONFIG_DIGEST_REALM);
 
   ESP_LOGW(TAG, "WWW-Authenticate: %s", hdr_buffer);

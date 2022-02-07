@@ -20,6 +20,7 @@ esp_err_t send_digest_authorisation_request(httpd_req_t *req)
   random = rand();
   getMD5((uint8_t *)(&random), 4, opaque);
 
+  char hdr_buffer[128];
   sprintf(hdr_buffer, "Digest realm=\"%s\", qop=\"auth\", nonce=\"%s\", opaque=\"%s\"",
           CONFIG_DIGEST_REALM, nonce, opaque);
 

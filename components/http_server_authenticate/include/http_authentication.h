@@ -16,7 +16,6 @@
  */
 
 #define HDR_BUFFER_LENGTH 1024
-extern char hdr_buffer[HDR_BUFFER_LENGTH];
 
 #if CONFIG_HTTP_AUTH_BASIC
 esp_err_t check_authorisation(httpd_req_t *req, char *user_id, char *password);
