@@ -96,10 +96,10 @@ esp_err_t validate_digest_response(const char *hdr_buffer, const char *method, c
   char rcvd_cnonce[33];
 
   char *token = strtok_r(hdr_buffer + strlen("Digest "), ",", &saveptr);
-  parse_token(token, param, value);
 
   while (token != NULL)
   {
+    parse_token(token, param, value);
 
     if (strcmp(param, "username") == 0)
       strlcpy(rcvd_username, value, 33);
@@ -119,7 +119,6 @@ esp_err_t validate_digest_response(const char *hdr_buffer, const char *method, c
       strlcpy(rcvd_cnonce, value, 33);
 
     token = strtok_r(NULL, ",", &saveptr);
-    parse_token(token, param, value);
   }
 
   // https://www.rfc-editor.org/rfc/rfc7616.html
