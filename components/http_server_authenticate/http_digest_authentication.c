@@ -148,6 +148,8 @@ esp_err_t validate_digest_response(const char *hdr_buffer, const char *method, c
   getMD5((uint8_t *)work_buffer, strlen(work_buffer), resp_hash);
   ESP_LOGW(TAG, "resp: %s, resp_hash: %s", work_buffer, resp_hash);
 
+  memset(nonce, '\0', sizeof(nonce));
+
   if (strcmp(rcvd_response, resp_hash) == 0)
   {
     return ESP_OK;
