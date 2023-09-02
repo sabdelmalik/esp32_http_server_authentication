@@ -104,6 +104,7 @@ esp_err_t getMD5(uint8_t *data, uint16_t len, char *output)
   mbedtls_md5_starts_ret(&_ctx);
   mbedtls_md5_update(&_ctx, data, len);
   mbedtls_md5_finish(&_ctx, buf);
+  mbedtls_md5_free(&_ctx);
   for (i = 0; i < 16; i++)
   {
     sprintf(output + (i * 2), "%02x", buf[i]);
